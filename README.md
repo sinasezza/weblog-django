@@ -1,0 +1,2 @@
+# weblog-django
+weblog
