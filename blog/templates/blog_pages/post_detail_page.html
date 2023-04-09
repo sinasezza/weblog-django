@@ -1,0 +1,13 @@
+{% extends "parent_page/base_page.html" %}
+
+{% block title %} {{post.title}} {% endblock title %}
+
+{% block content %}
+
+    <h1>the post <{{post.title}}> detail : </h1>
+
+    <h3>{{post.title}}</h3>
+    <p>{{post.body}}</p>
+    <p>{{post.author}}</p>
+
+{% endblock content %}
