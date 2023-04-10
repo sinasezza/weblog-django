@@ -4,10 +4,16 @@
 
 {% block content %}
 
-    <h1>the post <{{post.title}}> detail : </h1>
-
+    <h1>the post "{{post.title}}" detail : </h1>
+    <p><img src="{% if post.post_header_image %}{{post.post_header_image.url}}{% endif %}" alt="There is no image" width="400px" height="320px"></p>
     <h3>{{post.title}}</h3>
     <p>{{post.body}}</p>
-    <p>{{post.author}}</p>
+    
+    {% for item in post_images %}
+        <p><img src="{{item.image.url}}"></p>
+    {% endfor %}
+    
+    <p>Written by "{{post.author}}"</p>
+
 
 {% endblock content %}
