@@ -16,4 +16,14 @@
     <p>Written by "{{post.author}}"</p>
 
 
+    <div id="comments">
+        <h1 class="text-center bg-success">Comments</h1>
+        {% for comment_obj in post_comments %}
+            <div class="bg-primary text-white">
+                <p>commenter : {{comment_obj.name}}</p>
+                <p>Comment : {{comment_obj.comment}}</p>
+                <p>written at : {{comment_obj.created_date}}</p>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock content %}

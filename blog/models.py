@@ -31,12 +31,22 @@ class Post(models.Model):
     post_status = models.CharField(max_length=10,choices=status_choices,default='draft')
     # -------------------------------------------
     
+    class Meta:
+        constraints = [
+        models.UniqueConstraint(fields=['title','post_author'], name='unique_title_and_author')
+    ]
+        
+    # -------------------------------------------       
+    
     def __str__(self):
         return self.title
-
+    
+    # ------------------------------------------- 
+    
 
 # ============================================================
 # ============================================================
+
 
 class PostImage(models.Model):
     def post_image_directory_path(instance, filename):    
@@ -45,6 +55,29 @@ class PostImage(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     # -------------------------------------------
     image = models.FileField(upload_to=post_image_directory_path)
+    # -------------------------------------------
     
     def __str__(self):
         return 'image_{}-for post "{}"'.format(self.id,self.post)
+
+
+# ============================================================
+# ============================================================
+
+
+class PostComment(models.Model):
+    post         = models.ForeignKey(Post,on_delete=models.CASCADE)
+    # -------------------------------------------
+    name         = models.CharField(max_length=100)
+    # -------------------------------------------
+    email        = models.EmailField()
+    # -------------------------------------------
+    comment      = models.CharField(max_length=500)
+    # -------------------------------------------
+    active       = models.BooleanField(default=False)
+    # -------------------------------------------
+    created_date = models.DateTimeField(auto_now_add=True)
+    # -------------------------------------------
+
+    def __str__(self) :
+        return "{} - {} by {} ".format(self.pk,self.comment,self.name)

@@ -13,8 +13,8 @@ class PostListView(ListView):
     context_object_name = 'posts'
     
     def get_queryset(self):
-        published_post      = models.Post.objects.filter(post_status='published')
-        return published_post 
+        published_post = models.Post.objects.filter(post_status='published')
+        return published_post.order_by('-pk')
     
 
 # =======================================================
@@ -25,9 +25,12 @@ class PostDetailView(DetailView):
     template_name = 'blog_pages/post_detail_page.html'
     
     def get_context_data(self, **kwargs): 
-        context = super().get_context_data(**kwargs)
-        post_images = models.PostImage.objects.filter(post_id__exact = context['post'].id)
-        context['post_images'] = post_images
+        context         = super().get_context_data(**kwargs)
+        post_images     = models.PostImage.objects.filter(post_id__exact = context['post'].id)
+        post_comments   = models.PostComment.objects.filter(post_id__exact = context['post'].id,active=True)
+        
+        context['post_images']   = post_images
+        context['post_comments'] = post_comments
         return context
 
 # =======================================================
