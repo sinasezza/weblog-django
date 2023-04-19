@@ -2,28 +2,65 @@
 
 {% block title %} {{post.title}} {% endblock title %}
 
+
 {% block content %}
+  <div class="row">
+    <div class="col-md-8">
+        <h1 class="mt-4">{{ post.title }}</h1>
+        <p class="lead">
+        by {{ post.post_author }}
+        </p>
+        <hr>
+        {% if post.post_header_image %}
+        <img class="card-img-top mb-3" src="{{ post.post_header_image.url }}" alt="{{ post.title }}">
+        {% endif %}
+        <br>
+        <p>{{ post.body }}</p>
+        <hr>
 
-    <h1>the post "{{post.title}}" detail : </h1>
-    <p><img src="{% if post.post_header_image %}{{post.post_header_image.url}}{% endif %}" alt="There is no image" width="400px" height="320px"></p>
-    <h3>{{post.title}}</h3>
-    <p>{{post.body}}</p>
-    
-    {% for item in post_images %}
-        <p><img src="{{item.image.url}}"></p>
-    {% endfor %}
-    
-    <p>Written by "{{post.author}}"</p>
-
-
-    <div id="comments">
-        <h1 class="text-center bg-success">Comments</h1>
-        {% for comment_obj in post_comments %}
-            <div class="bg-primary text-white">
-                <p>commenter : {{comment_obj.name}}</p>
-                <p>Comment : {{comment_obj.comment}}</p>
-                <p>written at : {{comment_obj.created_date}}</p>
-            </div>
+        {% for post_image in post_images %}
+            <img class="img-fluid mb-3" src="{{ post_image.image.url }}" alt="{{ post.title }}">
         {% endfor %}
+
+        <hr>
+        <p class="text-muted">Published on {{ post.publish_date|date }}</p>
+
+
+
+        {% if post_comments %}
+            <h3 class="mt-4">Comments</h3>
+            {% for post_comment in post_comments %}
+                <div class="card mb-3">
+                    <div class="card-header">
+                        {{ post_comment.name }}
+                    </div>
+                    <div class="card-body">
+                      <p class="card-text">{{ post_comment.body }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <h3 class="mt-4">Leave a Comment</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="body">Comment:</label>
+                <textarea class="form-control" id="body" name="body" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
     </div>
-{% endblock content %}
+
+
+  </div>
+{% endblock %}

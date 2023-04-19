@@ -1,18 +1,19 @@
 from django.db import models
-from django.contrib.auth.models import User
+from authentication_app.models import AuthUser
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 
 class Post(models.Model):
     
     def post_directory_path(instance, filename):    
-        return '{0}/{1}/{2}'.format(instance.post_author.username,instance.title,filename)
+        return 'blog/media/{0}/{1}/{2}'.format(instance.post_author.username,instance.title,filename)
     
     title = models.CharField(max_length=250,)
     # -------------------------------------------
     post_slug  = models.SlugField(max_length=250,)
     # -------------------------------------------
-    post_author = models.ForeignKey(User,on_delete=models.CASCADE)
+    post_author = models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
     # -------------------------------------------
     post_header_image = models.ImageField(upload_to=post_directory_path,null=True,blank=True)
     # -------------------------------------------
@@ -68,9 +69,7 @@ class PostImage(models.Model):
 class PostComment(models.Model):
     post         = models.ForeignKey(Post,on_delete=models.CASCADE)
     # -------------------------------------------
-    name         = models.CharField(max_length=100)
-    # -------------------------------------------
-    email        = models.EmailField()
+    user         = models.ForeignKey(get_user_model(),on_delete=models.PROTECT)
     # -------------------------------------------
     comment      = models.CharField(max_length=500)
     # -------------------------------------------
@@ -80,4 +79,4 @@ class PostComment(models.Model):
     # -------------------------------------------
 
     def __str__(self) :
-        return "{} - {} by {} ".format(self.pk,self.comment,self.name)
+        return "{} - {} by {} ".format(self.pk,self.comment,self.user)

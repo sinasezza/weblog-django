@@ -4,20 +4,32 @@
 
 
 {% block content %}
-    <div class="text-dark">
-        this is post list
-    </div>
-    
-    
-    
-    {% for post in posts %}
-        <div class="">
-            <p><img src="{% if post.post_header_image %}{{post.post_header_image.url}}{% endif %}" alt="There is no image" width="200px" height="160px"></p>
-            <p><a href="{% url 'blog:post_detail' post.pk %}">{{post.title}}</a></p>
-            <p>Author : {{post.post_author}}</p>
+  <div class="container">
+    <h1>Published Posts</h1>
+    <div class="row">
+      {% for post in posts %}
+        <div class="col-md-4"></div>
+        <div class="col-md-8">
+          <div class="card mb-4 shadow-sm">
+            <img class="card-img-top" src="{% if post.post_header_image %}{{post.post_header_image.url}}{% endif %}" alt="{{ post.title }}">
+            <div class="card-body">
+              <h4 class="card-title">{{ post.title }}</h4>
+              <p class="card-text">{{ post.body|slice:":20"}}...</p>
+            </div>
+            <div class="card-footer">
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">{{ post.publish_date|date }}</small>
+                <div class="author-name">{{ post.post_author}}</div>
+              </div>
+              <div class="my-2">
+                <a href="{% url 'blog:post-detail' post.pk %}" class="btn btn-primary">Read More</a>
+              </div>
+            </div>
+          </div>
         </div>
-        <hr><hr><br>
-    {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
 
 
 

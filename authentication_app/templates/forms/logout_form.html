@@ -1,0 +1,13 @@
+{% extends "parent_page/base_page.html" %}
+
+{% block title %}Logout{% endblock title %}
+
+
+{% block content %}
+    <h2>Are you sure you want to log out?</h2>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, log me out</button>
+        <a href="{% url 'blog:post-list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+{% endblock content %}

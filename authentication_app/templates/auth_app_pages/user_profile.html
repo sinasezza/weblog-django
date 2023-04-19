@@ -1,0 +1,21 @@
+{% extends "parent_page/base_page.html" %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="{% if user.profile_photo %} {{ user.profile_photo.url }} {% endif %}" class="img-fluid" alt="Profile Photo">
+            </div>
+            <div class="col-md-8">
+                <h2>{{ user.username }}</h2>
+                <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Phone Number:</strong> {{ user.phone_number }}</p>
+                <p><strong>Age:</strong> {{ user.age }}</p>
+                <p><strong>Bio:</strong> {{ user.bio }}</p>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

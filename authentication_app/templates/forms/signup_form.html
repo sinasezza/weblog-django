@@ -1,0 +1,130 @@
+{% extends "parent_page/base_page.html" %}
+{% load static %}
+{% block title %}SIGN UP{% endblock title %}
+
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <h2 class="text-center mb-4">Sign Up</h2>
+                <form id="signup-form" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="step-1 d-done">
+                        <div>
+                            <div class="row">
+                                <div class="col-3"><label for="">{{form1.username.label_tag}}</label></div>
+                                <div class="col-6"><input type="text" maxlength="150" name="{{form1.username.name}}" id=""></div>
+                                <p>{{form1.username.help_text}}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <div class="col-3"><label for="">{{form1.password1.label_tag}}</label></div>
+                                <div class="col-5">
+                                    <input type="password" name="{{form1.password1.name}}" id="pass1">
+                                </div>
+                                <div class="col-3"><input type="checkbox" onclick="show_password($('#pass1'))">Show Password</div>
+                                <div class="col-1"><p>{{form1.password1.help_text}}</p></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <div class="col-3"><label for="">{{form1.password2.label_tag}}</label></div>
+                                <div class="col-5">
+                                    <input type="password" name="{{form1.password2.name}}" id="pass2">
+                                </div>
+                                <div class="col-3"><input type="checkbox" onclick="show_password($('#pass2'))">Show Password</div>
+                                <div class="row">
+                                    <div class="col"><p>{{form1.password2.help_text}}</p></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <div class="col-3"><label for="">{{form1.phone_number.label_tag}}</label></div>
+                                <div class="col-6"><input type="tel" maxlength="11" name="{{form1.phone_number.name}}" id=""></div>
+                                <p>{{form1.phone_number.help_text}}</p>
+                                
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary" id="next-step-1">Next</button>
+                    </div>
+                    
+                    
+                    <div class="step-2 d-none">
+                        {{ form2.as_p }}
+                        <button type="button" class="btn btn-primary mr-2" id="prev-step-2">Previous</button>
+                        <button type="button" class="btn btn-primary" id="next-step-2">Next</button>
+                    </div>
+
+
+                    <div class="step-3 d-none">
+                        <div class="panel panel-default">
+                            <div class="panel-body text-center">
+                                <img src="{% static 'img/user_avatar.png' %}" class="img-circle profile-avatar" width="300" height="300" alt="profile" onclick="save_image(this)" title="click to add">
+                                <input type="file" name="{{ form3.profile_photo.name }}"  id="img_input" accept="image/*" hidden>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary mr-2" id="prev-step-3">Previous</button>
+                        <button type="submit" class="btn btn-success">Sign Up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+      </div>
+
+{% endblock %}
+
+
+
+{% block extra_content %}
+    <script>
+        // Show/hide steps of the form based on button clicks
+        const step1 = $('.step-1');
+        const step2 = $('.step-2');
+        const step3 = $('.step-3');
+        
+        $('#next-step-1').on('click', () => {
+            step1.addClass('d-none');
+            step2.removeClass('d-none');
+        });
+    
+        $('#prev-step-2').on('click', () => {
+            step2.addClass('d-none');
+            step1.removeClass('d-none');
+        });
+  
+        $('#next-step-2').on('click', () => {
+            step2.addClass('d-none');
+            step3.removeClass('d-none');
+        });
+    
+        $('#prev-step-3').on('click', () => {
+            step3.addClass('d-none');
+            step2.removeClass('d-none');
+        });
+
+        function save_image(img) {
+            var file_input = $('#img_input');
+        
+            file_input.on('change', function() {
+              var file = this.files[0];
+              if(file) {
+                img.src = URL.createObjectURL(file);
+              }
+            });
+            file_input.click();
+        }
+
+        function show_password(elem) {
+            if (elem.attr("type") === "password")
+                elem.attr("type", "text");
+            else 
+                elem.attr("type", "password");
+        }
+
+    </script>
+  
+{% endblock %}
