@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog.apps.BlogConfig',
     'authentication_app.apps.AuthenticationAppConfig',
+    'autoslug',
 ]
 
 MIDDLEWARE = [

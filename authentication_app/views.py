@@ -16,7 +16,7 @@ class UserSignupView(View):
         
         context = {'form1':step_one_form,'form2':step_two_form,'form3':step_three_form}
         
-        return render(request,'forms/signup_form.html',context=context)
+        return render(request,'auth_forms/signup_form.html',context=context)
     
     # ===========================================
     
@@ -42,12 +42,12 @@ class UserSignupView(View):
             return redirect('authentication_app:user-panel')
         else:
             context = {'form1':step_one_form,'form2':step_two_form,'form3':step_three_form}
-            return render(request, 'forms/signup_form.html',context=context)
+            return render(request, 'auth_forms/signup_form.html',context=context)
     
 # ================================================
 
 class UserLoginView(LoginView):
-    template_name = 'forms/login_form.html'
+    template_name = 'auth_forms/login_form.html'
     redirect_authenticated_user = True
     
     def get_success_url(self):
@@ -56,7 +56,7 @@ class UserLoginView(LoginView):
 # ================================================
 
 class UserLogoutView(LoginRequiredMixin,LogoutView):
-    template_name = 'forms/logout_form.html'
+    template_name = 'auth_forms/logout_form.html'
     next_page = reverse_lazy('blog:post-list')
     login_url = '/auth/login/'
 
@@ -67,7 +67,7 @@ class UserLogoutView(LoginRequiredMixin,LogoutView):
 
 class UserDeleteView(LoginRequiredMixin,DeleteView):
     model = models.AuthUser
-    template_name = 'forms/delete_account_form.html'
+    template_name = 'auth_forms/delete_account_form.html'
     success_url = reverse_lazy('blog:post-list')
     login_url = '/auth/login/'
 
@@ -100,7 +100,7 @@ class UserPanelView(LoginRequiredMixin,DetailView):
     def get_context_data(self, **kwargs):
         context     = super().get_context_data(**kwargs)
         user_posts  = blog_models.Post.objects.filter(post_author_id=self.request.user.id)
-        context['posts'] = user_posts
+        context['posts'] = user_posts.order_by('-publish_date')
         return context
     
 # ================================================
@@ -108,7 +108,7 @@ class UserPanelView(LoginRequiredMixin,DetailView):
 class UserChangeProfileView(LoginRequiredMixin, UpdateView):
     model = models.AuthUser
     form_class = forms.UserChangeProfileForm
-    template_name = 'forms/change_profile_form.html'
+    template_name = 'auth_forms/change_profile_form.html'
     login_url = '/auth/login/'
     success_url =  reverse_lazy('authentication_app:user-panel')
     

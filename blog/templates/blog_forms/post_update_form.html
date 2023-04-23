@@ -1,0 +1,115 @@
+{% extends 'parent_page/base_page.html' %}
+
+{% block content %}
+
+  <div id="empty-form" style="display: none;">
+    <div class="card my-3">
+      <div class="card-body">
+        {% for field in paragraphs.empty_form.visible_fields %}
+          {% if field.name != 'DELETE' %}
+            <div class="form-group my-3">
+              <div class="row">
+                <div class="col-1">{{ field.label_tag }}</div>
+                <div class="col-5">{{ field }}</div>
+              </div>
+              {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+        <button type="button" class="btn btn-danger remove-formset">Remove Paragraph</button>
+      </div>
+    </div>
+  </div>
+
+  <form id="post-update-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{ paragraphs.management_form }}
+    <div id="formset-container">
+      {% for form in paragraphs.forms %}
+        <div class="card my-3">
+          <div class="card-body">
+            <div class="form-group">
+              {{form.as_p}}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <button type="button" class="btn btn-secondary add-formset">Add Paragraph</button>
+    <button type="submit" class="btn btn-primary" id="submint-btn">Update Post</button>
+  </form>
+
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function() {
+
+      let paragraphForms = $("#formset-container").find('.card');
+      let emptyFormTemplate = $("#empty-form").find('.card');
+      let container = $("#formset-container");
+      let addButton = $(".add-formset")
+      let delButton = $(".remove-formset");
+      let totalForms = $("#id_paragraphs-TOTAL_FORMS");
+      let formNum = paragraphForms.length ;
+      updateParagraphOrders();
+      
+      function updateParagraphOrders() {
+        // Update the __prefix__ numbers and orders of the remaining formsets
+        $("#formset-container .card").each(function(index) {
+          const formRegex = new RegExp(`-\\d+-`, "g");
+          const newPrefix = `-${index}-`;
+          
+          $(this).find('input, select, textarea','label').each(function() {
+            const newName = $(this).attr('name').replace(formRegex, newPrefix);
+            $(this).attr('name', newName);
+            const newId = $(this).attr('id').replace(formRegex, newPrefix);
+            $(this).attr('id', newId);
+          });
+          // -----------------------------
+          $(this).find('label').each(function() {
+            const newFor = $(this).attr('for').replace(formRegex, newPrefix);
+            $(this).attr('for', newFor);
+          });
+          // -----------------------------
+          $(this).find('input[type="number"]').val(index);
+          // -----------------------------
+        });
+      }
+
+      // Add formset
+      addButton.on("click", function(e) {
+        e.preventDefault();
+        let newForm = emptyFormTemplate.first().clone(true);
+        let formRegex = new RegExp(`-__prefix__-`, "g");
+        newForm.html(newForm.html().replace(formRegex, `-${formNum}-`));
+        container.append(newForm);
+        formNum++;
+        totalForms.attr("value", `${formNum}`);
+        updateParagraphOrders();
+      });
+
+      // Remove formset
+      $("#formset-container").on("click", ".remove-formset", function() {
+        // remove the form and update main numbers
+        $(this).closest(".card").remove();
+        formNum--;
+        totalForms.val(paragraphForms.length);
+        updateParagraphOrders();
+        formNum = $("#formset-container .card").length;
+        totalForms.val(formNum);  
+      });
+
+      $('#submit-btn').on('click', function(event) {
+        event.preventDefault();
+        updateParagraphOrders();
+        $('#post-update-form').submit();
+    });
+    
+  });
+      
+  </script>
+{% endblock %}

@@ -3,6 +3,32 @@
 {% block title %}PANEL : {{user.username}}{% endblock title %}
 
 {% block content %}
+
+  <div class="modal fade" id="post-delete-modal" tabindex="-1"  aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form action="" method="POST" id="post-delete-form">
+            {% csrf_token %}
+            <div hidden id="post_id"></div>
+            <h2>Delete Post</h2>
+            <p>Are you sure you want to delete Post  "<span id='post_title'></span>" ?</p>
+            <input type="submit" class="btn btn-danger" value="Yes, Delete it">
+            <button type="button" class="btn btn-secondary mx-4" data-dismiss="modal">NO, Don't Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form method="POST" hidden id="update-status-form">
+    <label for="id_post_status">Post status:</label>
+    <select name="post_status" id="id_post_status">
+        <option value="published">PUBLISHED</option>
+        <option value="draft" selected>DRAFT</option>
+    </select>
+  </form>
+
   <div class="container mt-5">
     <h1 class="mb-3">User Panel</h1>
     <div class="row">
@@ -26,20 +52,47 @@
               <div class="row">
                 <div class="col-8"><h5 class="card-title">Your Posts</h5></div>
                 <div class="col-4">
-                  <a href="" class="btn panel_btns btn-success">Add Post</a>
+                  <a href="{% url 'blog:post-create' %}" class="btn panel_btns btn-success">Add Post</a>
                 </div>
               </div>
               <br>
               {% if posts.count > 0 %}
                 {% for post in posts %}
-                  <div class="card mb-3">
+                  <div class="card my-5 single-post" id="id_post-{{post.pk}}">
                     <div class="card-title card-body">
                       <div class="row">
                         <div class="col-6"><h5>{{ post.title }}</h5></div>
-                        <div class="col-6"><img src="{% if post.post_header_image %}{{post.post_header_image.url}}{% endif %}" width="100" height="100" alt="post.title"></div>
+                        <div class="col-6 my-3"><img src="{% if post.post_header_image %}{{post.post_header_image.url}}{% endif %}" style="max-width: 200px;max-height:300px;" alt="{{post.title}}"></div>
                       </div>
-                      <p class="card-text">{{ post.body }}</p>
-                      <a href="{% url 'blog:post-detail' pk=post.pk %}" class="btn btn-primary">Read More</a>
+                      <div class="row">
+                        <h5>created at : {{post.create_date}}</h5>
+                      </div>
+                      <div class="row">
+                        <hr>
+                        {% for paragraph in post.paragraphs.all %}
+                          <div class="my-3">
+                            <p>{{paragraph.topic}} : </p>
+                            <p class="ms-3">{{paragraph.content}}</p>
+                            <div class="text-center">
+                              <img class="mb-2" src="{% if paragraph.header_image %}{{paragraph.header_image.url}}{% endif %}" alt="{{paragraph.topic}}" style="max-width: 200px;max-height:300px;">
+                            </div>
+                          </div>
+                          <hr>
+                        {% endfor %}
+                      </div>
+                        <div class="row">
+                          <div class="col-1"></div>
+                          <div class="col-3"><a href="{% url 'blog:post-detail' pk=post.pk slug=post.post_slug %}" class="btn btn-primary">Goto Post</a></div>
+                          <div class="col-3"><a href="{% url 'blog:post-update' pk=post.pk slug=post.post_slug %}" class="btn btn-primary">Update</a></div>
+                          {% if post.post_status == 'draft' %}
+                          <div class="col-4">STATUS : <button id="status-btn" pk="{{post.pk}}" slug="{{post.post_slug}}" class="btn btn-secondary text-dark mx-2" onclick="changeStatus(this)" title="click to make it Publised">{{post.post_status}}</button></div>
+                          {% else %}
+                          <div class="col-4">STATUS : <button id="status-btn" pk="{{post.pk}}" slug="{{post.post_slug}}" class="btn btn-success mx-2" onclick="changeStatus(this)" title="click to make it Draft">{{post.post_status}}</button></div>
+                          {% endif %}
+                        </div>
+                        <div class="row">
+                          <button type="button" id="del-btn" pk="{{post.pk}}" slug="{{post.post_slug}}" ptitle="{{post.title}}" class="btn w-100 btn-danger mx-auto my-2" onclick="openDelForm(this)">DELETE POST</button>
+                        </div>
                     </div>
                   </div>
                 {% endfor %}
@@ -53,4 +106,90 @@
   </div>
 {% endblock %}
 
+{% block scripts %}
+  <script>
+    
+    function changeStatus(statusButton){
+      let $status = statusButton.innerHTML;
+      let pk = statusButton.getAttribute('pk');
+      let slug = statusButton.getAttribute('slug');
+      let postUrl = `/post-status-update/${pk}-${slug}/`;
+      
+      if($status == 'draft')
+        $status = 'published';
+      else
+        $status = 'draft';
+      
+      $('#id_post_status').val($status);
+      let postForm = $("#update-status-form");
+      
+      $.ajax({
+        url: postUrl,
+        method: 'POST',
+        data: {
+            form: postForm.serialize(),
+            csrfmiddlewaretoken: '{{csrf_token}}',
+            post_status: $status,
+        },
+        success: function(response) {
+          if (response.success) {
+              statusButton.innerHTML = $status;
+              if($status == 'draft') {
+                  statusButton.classList.add('btn-secondary', 'text-dark');
+                  statusButton.classList.remove('btn-success'); 
+                  statusButton.setAttribute('title','click to make it Published');
+              } else {
+                  statusButton.classList.add('btn-success');
+                  statusButton.classList.remove('btn-secondary', 'text-dark');
+                  statusButton.setAttribute('title','click to make it Draft');
+              }
+          }else{
+              console.log(response.errors);
+          }
+        }
+      });
+    }
+    // ---------------------------------------
+    function openDelForm(delButton){
+      let pk = $(delButton).attr('pk');
+      let slug = $(delButton).attr('slug');
+      let ptitle = $(delButton).attr('ptitle');
+    
+      $('#post-delete-modal #post_title').text(ptitle);
+      $('#post-delete-modal #post_id').text(pk);
+      $('#post-delete-modal #post-delete-form').attr('action', `/blog/post-delete/${pk}-${slug}/`);
+      $('#post-delete-modal').modal('show');
+    }
 
+
+    $('#post-delete-form').on('submit', function (e) {
+      e.preventDefault();
+
+      let pk       = $('#post-delete-modal #post_id').text();
+      let postUrl  = `/post-delete/${pk}/`;
+      let postForm = $('#post-delete-form');
+
+      $.ajax({
+        url: postUrl,
+        method: 'POST',
+        data: {
+            form: postForm.serialize(),
+            csrfmiddlewaretoken: '{{csrf_token}}',
+        },
+        success: function(response) {
+          $('#id_post-'+pk).remove();
+          $('#post-delete-modal').modal('hide');
+        }
+      });
+      
+    });
+    
+    
+    $('#post-delete-modal button[type="button"]').on('click', function () {
+      $('#post-delete-modal').modal('hide');
+    });
+
+
+  </script>
+
+{% endblock scripts %}

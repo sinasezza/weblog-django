@@ -1,16 +1,16 @@
 body{
-    background-color: darkgray !important;
+    background-color: aliceblue !important;
 }
-
+/* ---------------------------------------------- */
 .card-img-top{
     height: 450px !important;
 }
-
+/* ---------------------------------------------- */
 .wrapper {    
 	margin-top: 80px;
 	margin-bottom: 20px;
 }
-
+/* ---------------------------------------------- */
 .form-signin {
   max-width: 420px;
   padding: 30px 38px 66px;
@@ -18,90 +18,98 @@ body{
   background-color: #eee;
   border: 3px dotted rgba(0,0,0,0.1);  
   }
-
+/* ---------------------------------------------- */
 .form-signin-heading {
   text-align:center;
   margin-bottom: 30px;
 }
-
+/* ---------------------------------------------- */
 .form-control {
   position: relative;
   font-size: 16px;
   height: auto;
   padding: 10px;
 }
-
+/* ---------------------------------------------- */
 input[type="text"] {
   margin-bottom: 0px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
-
+/* ---------------------------------------------- */
 input[type="password"] {
   margin-bottom: 20px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
-
-
+/* ---------------------------------------------- */
 .panel {
 box-shadow: none;
 }
+/* ---------------------------------------------- */
 .panel-heading {
 border-bottom: 0;
 }
+/* ---------------------------------------------- */
 .panel-title {
 font-size: 17px;
 }
+/* ---------------------------------------------- */
 .panel-title > small {
 font-size: .75em;
 color: #999999;
 }
+/* ---------------------------------------------- */
 .panel-body *:first-child {
 margin-top: 0;
 }
+/* ---------------------------------------------- */
 .panel-footer {
 border-top: 0;
 }
-
+/* ---------------------------------------------- */
 .panel-default > .panel-heading {
     color: #333333;
     background-color: transparent;
     border-color: rgba(0, 0, 0, 0.07);
 }
-
+/* ---------------------------------------------- */
 .panel_btns{
   width: 190px ;
   text-align: center;
 }
-
+/* ---------------------------------------------- */
 form label {
     color: #999999;
     font-weight: 400;
 }
+/* ---------------------------------------------- */
 
 .form-horizontal .form-group {
     margin-left: -15px;
     margin-right: -15px;
 }
+/* ---------------------------------------------- */
 @media (min-width: 768px) {
-.form-horizontal .control-label {
+  .form-horizontal .control-label {
     text-align: right;
     margin-bottom: 0;
     padding-top: 7px;
+  }
 }
-}
-
+/* ---------------------------------------------- */
 .profile__contact-info-icon {
     float: left;
     font-size: 18px;
     color: #999999;
 }
+/* ---------------------------------------------- */
 .profile__contact-info-body {
     overflow: hidden;
     padding-left: 20px;
     color: #999999;
 }
+/* ---------------------------------------------- */
 .profile-avatar {
     width: 250px;
     position: relative;
@@ -109,6 +117,25 @@ form label {
     margin-top: 196px;
     border: 4px solid #f3f3f3;
 }
-.profile-avatar:hover{
+/* ---------------------------------------------- */
+.profile-avatar:hover {
   cursor: pointer;
+}
+/* ---------------------------------------------- */
+.card {
+  border: none;
+  border-radius: 0;
+}
+/* ---------------------------------------------- */
+.form-group label {
+  font-weight: bold;
+}
+/* ---------------------------------------------- */
+#formset-container {
+  margin-bottom: 1rem;
+}
+/* ---------------------------------------------- */
+.single-post{
+  border: 4px solid black !important;
+  border-radius : 20px !important;
 }

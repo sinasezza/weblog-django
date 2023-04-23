@@ -4,63 +4,74 @@
 
 
 {% block content %}
-  <div class="row">
+
+
+    
+    <div class="row">
     <div class="col-md-8">
         <h1 class="mt-4">{{ post.title }}</h1>
         <p class="lead">
-        by {{ post.post_author }}
+            by <a href="{% url 'authentication_app:user-profile' post.post_author.pk post.post_author %}">{{ post.post_author }}</a>
         </p>
         <hr>
         {% if post.post_header_image %}
         <img class="card-img-top mb-3" src="{{ post.post_header_image.url }}" alt="{{ post.title }}">
         {% endif %}
-        <br>
-        <p>{{ post.body }}</p>
-        <hr>
-
-        {% for post_image in post_images %}
-            <img class="img-fluid mb-3" src="{{ post_image.image.url }}" alt="{{ post.title }}">
+        
+        <br>              
+        {% for paragraph in post.paragraphs.all %}
+            <div class="card my-3">
+                <div class="card-body">
+                    <h3 class="card-title">{{ paragraph.topic }}</h3>
+                    <p class="card-text">{{ paragraph.content }}</p>
+                    {% if paragraph.header_image %}
+                        <img src="{{ paragraph.header_image.url }}" alt="{{ paragraph.topic }}" class="img-fluid mb-3" style="max-height: 450px; width: 100%;">
+                    {% endif %}
+                </div>
+            </div>
         {% endfor %}
 
         <hr>
         <p class="text-muted">Published on {{ post.publish_date|date }}</p>
 
-
-
-        {% if post_comments %}
-            <h3 class="mt-4">Comments</h3>
-            {% for post_comment in post_comments %}
-                <div class="card mb-3">
-                    <div class="card-header">
-                        {{ post_comment.name }}
+        <div id="post-comments">
+            {% if post_comments %}
+                <h3 class="mt-4">Comments</h3>
+                {% for post_comment in post_comments %}
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            {{ post_comment.user }}
+                        </div>
+                        <div class="card-body">
+                          <p class="card-text">{{ post_comment.comment }}</p>
+                        </div>
                     </div>
-                    <div class="card-body">
-                      <p class="card-text">{{ post_comment.body }}</p>
-                    </div>
-                </div>
-            {% endfor %}
-        {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+
 
         <h3 class="mt-4">Leave a Comment</h3>
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" class="form-control" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="body">Comment:</label>
-                <textarea class="form-control" id="body" name="body" rows="5" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        {% if request.user.is_authenticated %}
+            <form method="post" id="post-comment-form" action="">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{comment_form.comment}} 
+                </div>
+                <button type="submit" class="btn btn-success my-2 ms-2">SEND COMMENT</button>
+            </form>
+        {% else %}
+            <h4>To Leave a Comment <a href="{% url 'authentication_app:singup' %}">Signup</a></h4>
+        {% endif %}
 
     </div>
 
 
-  </div>
+    </div>
 {% endblock %}
+
+{% block scripts %}
+  <script>
+    
+  </script>
+{% endblock scripts %}

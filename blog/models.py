@@ -2,6 +2,7 @@ from django.db import models
 from authentication_app.models import AuthUser
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from autoslug import AutoSlugField
 
 
 class Post(models.Model):
@@ -11,13 +12,11 @@ class Post(models.Model):
     
     title = models.CharField(max_length=250,)
     # -------------------------------------------
-    post_slug  = models.SlugField(max_length=250,)
+    post_slug = AutoSlugField(populate_from='title')
     # -------------------------------------------
     post_author = models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
     # -------------------------------------------
     post_header_image = models.ImageField(upload_to=post_directory_path,null=True,blank=True)
-    # -------------------------------------------
-    body = models.TextField()
     # -------------------------------------------
     create_date = models.DateTimeField(auto_now_add=True)
     # -------------------------------------------
@@ -49,17 +48,23 @@ class Post(models.Model):
 # ============================================================
 
 
-class PostImage(models.Model):
+class PostParagraph(models.Model):
     def post_image_directory_path(instance, filename):    
-        return '{0}/{1}/{2}'.format(instance.post.post_author.username,instance.post.title,filename)
+        return 'blog/media/{0}/{1}/P_{2}/{3}'.format(instance.post.post_author.username,instance.post.title,instance.topic,filename)
     
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='paragraphs')
     # -------------------------------------------
-    image = models.FileField(upload_to=post_image_directory_path)
+    topic = models.CharField(max_length=100)
+    # -------------------------------------------
+    content = models.TextField(null=True,blank=True)
+    # -------------------------------------------
+    order = models.PositiveSmallIntegerField()
+    # -------------------------------------------
+    header_image = models.ImageField(upload_to=post_image_directory_path,null=True,blank=True)
     # -------------------------------------------
     
-    def __str__(self):
-        return 'image_{}-for post "{}"'.format(self.id,self.post)
+    class Meta:
+        ordering = ['order']
 
 
 # ============================================================
@@ -67,7 +72,7 @@ class PostImage(models.Model):
 
 
 class PostComment(models.Model):
-    post         = models.ForeignKey(Post,on_delete=models.CASCADE)
+    post         = models.ForeignKey(Post,on_delete=models.CASCADE,related_name='comments')
     # -------------------------------------------
     user         = models.ForeignKey(get_user_model(),on_delete=models.PROTECT)
     # -------------------------------------------
