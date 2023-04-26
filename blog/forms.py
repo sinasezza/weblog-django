@@ -9,6 +9,7 @@ PostParagraphFormSet = inlineformset_factory(models.Post,models.PostParagraph,
                                                 can_delete=True,
                                                 widgets={
                                                 'order': forms.NumberInput(attrs={'max': 100}),
+                                                'content':forms.Textarea(attrs={'maxlength':2000}),
                                                 }
                                             )
 
@@ -26,5 +27,5 @@ class PostCommentForm(forms.ModelForm):
         model = models.PostComment
         fields = ('comment',)
         widgets = {
-            'comment': forms.Textarea(attrs={'rows': 4,'cols':50,'style':'font-size:20px;'}),
+            'comment': forms.Textarea(attrs={'cols':50,'rows':4,'maxlength':300,'style':'font-size:25px;font-style:italic;'})
         }

@@ -4,10 +4,16 @@
 
 
 {% block content %}
-    <h1 class="bg-secondary text-center text-light">Hello world</h1>
 
-    <div class="container bg-warning fw-large">
-        <a href="{% url 'blog:post-list' %}">POSTS</a>
+    <div class="text-center my-5">
+        <h1>Welcome To My Weblog</h1>
+        <h2>to see posts <a href="{% url 'blog:post-list' %}">click</a> here<br></h1>
+        {% if request.user.is_authenticated %}    
+            <h2>to see panel <a href="{% url 'authentication_app:user-panel' %}">click</a> here</h2>
+        {% else %}
+            <h2>to signup <a href="{% url 'authentication_app:signup' %}">click</a> here<br></h1>
+            <h2>to login <a href="{% url 'authentication_app:login' %}">click</a> here</h1>
+        {% endif %}
     </div>
 
 {% endblock content %}

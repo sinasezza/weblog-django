@@ -139,3 +139,27 @@ form label {
   border: 4px solid black !important;
   border-radius : 20px !important;
 }
+/* ---------------------------------------------- */
+.navbar {
+  margin-bottom: 20px;
+}
+/* ---------------------------------------------- */
+.navbar-brand {
+  font-weight: bold;
+}
+/* ---------------------------------------------- */
+.nav-link {
+  color: #333;
+}
+/* ---------------------------------------------- */
+.nav-link:hover {
+  color: #999999;
+  background-color: #eee;
+}
+/* ---------------------------------------------- */
+.navbar-toggler-icon {
+  background-color: #333;
+}
+/* ---------------------------------------------- */
+
+

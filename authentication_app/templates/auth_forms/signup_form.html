@@ -11,6 +11,15 @@
                 <form id="signup-form" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="step-1 d-done">
+                        {% if form1.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                <strong>Error:</strong>
+                                {% for error in form1.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
                         <div>
                             <div class="row">
                                 <div class="col-3"><label for="">{{form1.username.label_tag}}</label></div>
@@ -79,7 +88,7 @@
 
 
 
-{% block extra_content %}
+{% block scripts %}
     <script>
         // Show/hide steps of the form based on button clicks
         const step1 = $('.step-1');
@@ -127,4 +136,4 @@
 
     </script>
   
-{% endblock %}
+{% endblock scripts %}

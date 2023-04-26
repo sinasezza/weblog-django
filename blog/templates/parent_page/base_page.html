@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
 <head>
+    {% load static %}
+
     {% block head %}
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,10 +13,10 @@
             {% endblock title %}
         </title>
 
-        <script src="{% static 'js/jquery.min.js' %}"></script>
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
-        <script src="{% static 'js/fontawesome.min.js' %}"></script>
-        <script src="{% static 'js/all.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/fontawesome.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/all.min.js' %}"></script>
     
         <link rel="shortcut icon" type="image/png" href="{% static 'img/blog.png' %}"/>
         <link rel="stylesheet" href="{% static 'css/styles.css' %}">
@@ -34,8 +35,8 @@
         {% endfor %}
     {% endif %}
 
-    {% comment %} {% include "partials/header.html"      %} 
-    {% include "partials/navigation.html" %} {% endcomment %}
+    {% include "partials/navigation.html" %}
+    
     {% block content %}
 
     {% endblock content %}
@@ -44,7 +45,7 @@
 
     {% endblock scripts %}
 
-    {% comment %} {% include "partials/pagination.html" %} 
-    {% include "partials/footer.html" %}  {% endcomment %}
+    {% include "partials/pagination.html" %} 
 </body>
+
 </html>

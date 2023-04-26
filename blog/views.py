@@ -16,11 +16,20 @@ class HomePageView(TemplateView):
 class PostListView(ListView):
     template_name = 'blog_pages/post_list_page.html'
     context_object_name = 'posts'
-    # paginate_by = 9
+    paginate_by = 8
     
     def get_queryset(self):
-        published_post = models.Post.objects.filter(post_status='published')
-        return published_post.order_by('-publish_date')
+        published_posts = models.Post.objects.filter(post_status='published')
+        search_input = self.request.GET.get('search-area') or ''
+        if search_input:
+            published_posts = published_posts.filter(title__startswith=search_input)
+        return published_posts.order_by('-publish_date')
+    
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        search_input = self.request.GET.get('search-area') or ''
+        context['search_input'] = search_input
+        return context
          
 # =======================================================
 
@@ -50,6 +59,9 @@ class PostCommentCreateView(LoginRequiredMixin,SuccessMessageMixin, CreateView):
         form.instance.post = post
         form.instance.user = self.request.user
         return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        return super().form_invalid(form)
     
     def get_success_url(self):
         return reverse_lazy('blog:post-detail', kwargs={'pk': self.kwargs['pk'], 'slug': self.kwargs['slug']})

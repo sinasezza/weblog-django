@@ -3,13 +3,17 @@ from django.views.generic import View , DeleteView , DetailView , UpdateView
 from django.contrib.auth.views import LoginView , LogoutView 
 from django.contrib.auth import login, authenticate , logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages 
 from django.urls import reverse_lazy
 from . import models,forms
 import blog.models as blog_models
 
 class UserSignupView(View):
-
+    
     def get(self,request):
+        if request.user.is_authenticated:
+            messages.warning(request,'you are already loged in , please log out and try again')
+            return redirect('authentication_app:user-panel')
         step_one_form   = forms.UserSignupForm_Step01()
         step_two_form   = forms.UserSignupForm_Step02()
         step_three_form = forms.UserSignupForm_Step03()

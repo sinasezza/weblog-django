@@ -56,7 +56,7 @@ class PostParagraph(models.Model):
     # -------------------------------------------
     topic = models.CharField(max_length=100)
     # -------------------------------------------
-    content = models.TextField(null=True,blank=True)
+    content = models.TextField(max_length=2000,null=True,blank=True)
     # -------------------------------------------
     order = models.PositiveSmallIntegerField()
     # -------------------------------------------
@@ -76,7 +76,7 @@ class PostComment(models.Model):
     # -------------------------------------------
     user         = models.ForeignKey(get_user_model(),on_delete=models.PROTECT)
     # -------------------------------------------
-    comment      = models.CharField(max_length=500)
+    comment      = models.TextField(max_length=300)
     # -------------------------------------------
     active       = models.BooleanField(default=False)
     # -------------------------------------------
