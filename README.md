@@ -1,5 +1,5 @@
 # weblog-django
-the weblog has tow apps :
+the weblog has two apps :
 * blog app
 * authentication app
 
