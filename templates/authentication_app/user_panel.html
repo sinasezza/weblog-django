@@ -10,9 +10,9 @@
         <div class="modal-body">
           <form action="" method="POST" id="post-delete-form">
             {% csrf_token %}
-            <div hidden id="post_id"></div>
+            <div hidden id="id"></div>
             <h2>Delete Post</h2>
-            <p>Are you sure you want to delete Post  "<span id='post_title'></span>" ?</p>
+            <p>Are you sure you want to delete Post  "<span id='title'></span>" ?</p>
             <input type="submit" class="btn btn-danger" value="Yes, Delete it">
             <button type="button" class="btn btn-secondary mx-4" data-dismiss="modal">NO, Don't Delete</button>
           </form>
@@ -22,8 +22,8 @@
   </div>
 
   <form method="POST" hidden id="update-status-form">
-    <label for="id_post_status">Post status:</label>
-    <select name="post_status" id="id_post_status">
+    <label for="id_status">Post status:</label>
+    <select name="status" id="id_status">
         <option value="published">PUBLISHED</option>
         <option value="draft" selected>DRAFT</option>
     </select>
@@ -62,7 +62,7 @@
                     <div class="card-title card-body">
                       <div class="row">
                         <div class="col-6"><h5>{{ post.title }}</h5></div>
-                        <div class="col-6 my-3"><img src="{% if post.post_header_image %}{{post.post_header_image.url}}{% endif %}" style="max-width: 200px;max-height:300px;" alt="{{post.title}}"></div>
+                        <div class="col-6 my-3"><img src="{% if post.header_image %}{{post.header_image.url}}{% endif %}" style="max-width: 200px;max-height:300px;" alt="{{post.title}}"></div>
                       </div>
                       <div class="row">
                         <h5>created at : {{post.create_date}}</h5>
@@ -82,16 +82,16 @@
                       </div>
                         <div class="row">
                           <div class="col-1"></div>
-                          <div class="col-3"><a href="{% url 'blog:post-detail' pk=post.pk slug=post.post_slug %}" class="btn btn-primary">Goto Post</a></div>
-                          <div class="col-3"><a href="{% url 'blog:post-update' pk=post.pk slug=post.post_slug %}" class="btn btn-primary">Update</a></div>
-                          {% if post.post_status == 'draft' %}
-                          <div class="col-4">STATUS : <button id="status-btn" pk="{{post.pk}}" slug="{{post.post_slug}}" class="btn btn-secondary text-dark mx-2" onclick="changeStatus(this)" title="click to make it Publised">{{post.post_status}}</button></div>
+                          <div class="col-3"><a href="{% url 'blog:post-detail' slug=post.slug %}" class="btn btn-primary">Goto Post</a></div>
+                          <div class="col-3"><a href="{% url 'blog:post-update' slug=post.slug %}" class="btn btn-primary">Update</a></div>
+                          {% if post.status == 'draft' %}
+                          <div class="col-4">STATUS : <button id="status-btn" pk="{{post.pk}}" slug="{{post.slug}}" class="btn btn-secondary text-dark mx-2" onclick="changeStatus(this)" title="click to make it Publised">{{post.status}}</button></div>
                           {% else %}
-                          <div class="col-4">STATUS : <button id="status-btn" pk="{{post.pk}}" slug="{{post.post_slug}}" class="btn btn-success mx-2" onclick="changeStatus(this)" title="click to make it Draft">{{post.post_status}}</button></div>
+                          <div class="col-4">STATUS : <button id="status-btn" pk="{{post.pk}}" slug="{{post.slug}}" class="btn btn-success mx-2" onclick="changeStatus(this)" title="click to make it Draft">{{post.status}}</button></div>
                           {% endif %}
                         </div>
                         <div class="row">
-                          <button type="button" id="del-btn" pk="{{post.pk}}" slug="{{post.post_slug}}" ptitle="{{post.title}}" class="btn w-100 btn-danger mx-auto my-2" onclick="openDelForm(this)">DELETE POST</button>
+                          <button type="button" id="del-btn" pk="{{post.pk}}" slug="{{post.slug}}" ptitle="{{post.title}}" class="btn w-100 btn-danger mx-auto my-2" onclick="openDelForm(this)">DELETE POST</button>
                         </div>
                     </div>
                   </div>
@@ -120,7 +120,7 @@
       else
         $status = 'draft';
       
-      $('#id_post_status').val($status);
+      $('#id_status').val($status);
       let postForm = $("#update-status-form");
       
       $.ajax({
@@ -129,7 +129,7 @@
         data: {
             form: postForm.serialize(),
             csrfmiddlewaretoken: '{{csrf_token}}',
-            post_status: $status,
+            status: $status,
         },
         success: function(response) {
           if (response.success) {
@@ -155,8 +155,8 @@
       let slug = $(delButton).attr('slug');
       let ptitle = $(delButton).attr('ptitle');
     
-      $('#post-delete-modal #post_title').text(ptitle);
-      $('#post-delete-modal #post_id').text(pk);
+      $('#post-delete-modal #title').text(ptitle);
+      $('#post-delete-modal #id').text(pk);
       $('#post-delete-modal #post-delete-form').attr('action', `/blog/post-delete/${pk}-${slug}/`);
       $('#post-delete-modal').modal('show');
     }
@@ -165,7 +165,7 @@
     $('#post-delete-form').on('submit', function (e) {
       e.preventDefault();
 
-      let pk       = $('#post-delete-modal #post_id').text();
+      let pk       = $('#post-delete-modal #id').text();
       let postUrl  = `/post-delete/${pk}/`;
       let postForm = $('#post-delete-form');
 

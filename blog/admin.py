@@ -11,7 +11,7 @@ class PostCommentInline(admin.StackedInline):
     extra = 0
     
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title' ,'post_slug', 'post_author','create_date','post_status',)
+    list_display = ('title' ,'slug', 'author','create_date','status',)
     inlines = [PostParagraphInline,PostCommentInline]
 
 class PostParagraphsAdmin(admin.ModelAdmin):

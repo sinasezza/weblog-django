@@ -3,22 +3,24 @@ from django.forms.models import inlineformset_factory
 from . import models
 
     
-PostParagraphFormSet = inlineformset_factory(models.Post,models.PostParagraph, 
-                                                fields=('topic', 'content', 'order','header_image'),
-                                                extra=0,
-                                                can_delete=True,
-                                                widgets={
-                                                'order': forms.NumberInput(attrs={'max': 100}),
-                                                'content':forms.Textarea(attrs={'maxlength':2000}),
-                                                }
-                                            )
+PostParagraphFormSet = inlineformset_factory(
+    models.Post,models.PostParagraph, 
+    fields=('topic', 'content', 'order','header_image'),
+    extra=0,
+    can_delete=True,
+    widgets={
+        'topic': forms.TextInput(attrs={'maxlength': 45, 'required': True}),
+        'order': forms.NumberInput(attrs={'max': 100}),
+        'content':forms.Textarea(attrs={'maxlength':1000}),
+    }
+)
 
 # ===============================================
 
 class PostStatusForm(forms.ModelForm):
     class Meta:
         model = models.Post
-        fields = ('post_status',)
+        fields = ('status',)
 
 # ===============================================
 

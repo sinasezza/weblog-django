@@ -14,12 +14,12 @@ class HomePageView(TemplateView):
 # =======================================================
 
 class PostListView(ListView):
-    template_name = 'blog/post_list_page.html'
+    template_name = 'blog/list_page.html'
     context_object_name = 'posts'
     paginate_by = 8
     
     def get_queryset(self):
-        published_posts = models.Post.objects.filter(post_status='published')
+        published_posts = models.Post.objects.filter(status='published')
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
             published_posts = published_posts.filter(title__startswith=search_input)
@@ -36,12 +36,12 @@ class PostListView(ListView):
 class PostDetailView(DetailView):
     model = models.Post
     context_object_name = 'post'
-    template_name = 'blog/post_detail_page.html'
+    template_name = 'blog/detail_page.html'
     
     def get_context_data(self, **kwargs): 
         context         = super().get_context_data(**kwargs)
-        post_comments   = models.PostComment.objects.filter(post_id__exact = context['post'].id,active=True,)
-        context['post_comments'] = post_comments
+        comments   = context['post'].comments.filter(active=True)
+        context['comments'] = comments
         context['comment_form']  = forms.PostCommentForm()
         return context
 
@@ -50,7 +50,7 @@ class PostDetailView(DetailView):
 class PostCommentCreateView(LoginRequiredMixin,SuccessMessageMixin, CreateView):
     model = models.PostComment
     form_class = forms.PostCommentForm
-    template_name = 'blog/post_detail_page.html'
+    template_name = 'blog/detail_page.html'
     context_object_name = 'post'
     success_message = 'Comment is Posted Success fully , it will be shown when admins confirm it'
     
@@ -81,12 +81,12 @@ class PostCombine_detail_comment_View(View):
 
 # =======================================================
 
-class PostCreateView(LoginRequiredMixin,SuccessMessageMixin,CreateView):
+class PostCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = models.Post
-    template_name = 'blog/post_create_form.html'
+    template_name = 'blog/create_form.html'
     success_url = reverse_lazy('authentication_app:user-panel')
     login_url = 'authentication_app:login'
-    fields = ['title', 'post_header_image']
+    fields = ['title', 'header_image']
     success_message = 'post created successfully'
 
     def get_context_data(self, **kwargs):
@@ -96,12 +96,12 @@ class PostCreateView(LoginRequiredMixin,SuccessMessageMixin,CreateView):
         else:
             # Create a new instance of the Post model
             post = models.Post()
-            post.post_author = self.request.user
+            post.author = self.request.user
             data['paragraphs'] = forms.PostParagraphFormSet(instance=post)
         return data
 
     def form_valid(self, form):
-        form.instance.post_author = self.request.user
+        form.instance.author = self.request.user
         with transaction.atomic():
             self.object = form.save()
             formset = forms.PostParagraphFormSet(self.request.POST, self.request.FILES, instance=self.object)
@@ -113,10 +113,10 @@ class PostCreateView(LoginRequiredMixin,SuccessMessageMixin,CreateView):
   
 class PostUpdateView(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
     model = models.Post
-    template_name = 'blog/post_update_form.html'
+    template_name = 'blog/update_form.html'
     success_url = reverse_lazy('authentication_app:user-panel')
     login_url = 'authentication_app:login'
-    fields = ['title', 'post_header_image']
+    fields = ['title', 'header_image']
     success_message = 'post updated successfully'
 
     def get_context_data(self, **kwargs):
@@ -128,8 +128,8 @@ class PostUpdateView(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
         return data
     
     def form_valid(self, form):
-        form.instance.post_author = self.request.user
-        form.instance.post_slug = slugify(form.instance.title)
+        form.instance.author = self.request.user
+        form.instance.slug = slugify(form.instance.title)
         with transaction.atomic():
             self.object = form.save()
             formset = forms.PostParagraphFormSet(self.request.POST, self.request.FILES, instance=self.object)
@@ -150,7 +150,7 @@ class PostStatusUpdateView(LoginRequiredMixin,View):
         form = self.form_class(request.POST)
         if form.is_valid():
             post = get_object_or_404(self.model, pk=self.kwargs.get('pk'))
-            post.post_status = form.cleaned_data['post_status']
+            post.status = form.cleaned_data['status']
             post.save()
             data = {'success': True}
         else:

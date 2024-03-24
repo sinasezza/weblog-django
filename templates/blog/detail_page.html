@@ -11,11 +11,11 @@
     <div class="col-md-8">
         <h1 class="mt-4">{{ post.title }}</h1>
         <p class="lead">
-            by <a href="{% url 'authentication_app:user-profile' pk=post.post_author.pk username=post.post_author.username %}">{{ post.post_author }}</a>
+            by <a href="{% url 'authentication_app:user-profile' pk=post.author.pk username=post.author.username %}">{{ post.author }}</a>
         </p>
         <hr>
-        {% if post.post_header_image %}
-        <img class="card-img-top mb-3" src="{{ post.post_header_image.url }}" alt="{{ post.title }}">
+        {% if post.header_image %}
+        <img class="card-img-top mb-3" src="{{ post.header_image.url }}" alt="{{ post.title }}">
         {% endif %}
         
         <br>              
@@ -36,14 +36,14 @@
 
         <div id="post-comments">
             <h3 class="mt-4">Comments</h3>
-            {% if post_comments.count %}
-                {% for post_comment in post_comments %}
+            {% if comments.count %}
+                {% for comment in comments %}
                     <div class="card mb-3">
                         <div class="card-header">
-                            {{ post_comment.user }}
+                            {{ comment.user }}
                         </div>
                         <div class="card-body">
-                          <p class="card-text">{{ post_comment.comment|safe }}</p>
+                          <p class="card-text">{{ comment.comment|safe }}</p>
                         </div>
                     </div>
                 {% endfor %}

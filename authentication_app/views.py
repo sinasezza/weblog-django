@@ -103,7 +103,7 @@ class UserPanelView(LoginRequiredMixin,DetailView):
     
     def get_context_data(self, **kwargs):
         context     = super().get_context_data(**kwargs)
-        user_posts  = blog_models.Post.objects.filter(post_author_id=self.request.user.id)
+        user_posts  = blog_models.Post.objects.filter(author_id=self.request.user.id)
         context['posts'] = user_posts.order_by('-publish_date')
         return context
     
