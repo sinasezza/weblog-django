@@ -2,7 +2,7 @@ asgiref==3.7.2
 certifi==2024.2.2
 charset-normalizer==3.3.2
 colorclass==2.2.2
-Django==5.0.1
+Django==5.0.3
 django-autoslug==1.9.9
 django-js-asset==2.2.0
 docopt==0.6.2
