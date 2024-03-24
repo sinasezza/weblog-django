@@ -20,7 +20,7 @@ class UserSignupView(View):
         
         context = {'form1':step_one_form,'form2':step_two_form,'form3':step_three_form}
         
-        return render(request,'auth_forms/signup_form.html',context=context)
+        return render(request,'authentication_app/signup_form.html',context=context)
     
     # ===========================================
     
@@ -46,12 +46,12 @@ class UserSignupView(View):
             return redirect('authentication_app:user-panel')
         else:
             context = {'form1':step_one_form,'form2':step_two_form,'form3':step_three_form}
-            return render(request, 'auth_forms/signup_form.html',context=context)
+            return render(request, 'authentication_app/signup_form.html',context=context)
     
 # ================================================
 
 class UserLoginView(LoginView):
-    template_name = 'auth_forms/login_form.html'
+    template_name = 'authentication_app/login_form.html'
     redirect_authenticated_user = True
     
     def get_success_url(self):
@@ -60,9 +60,9 @@ class UserLoginView(LoginView):
 # ================================================
 
 class UserLogoutView(LoginRequiredMixin,LogoutView):
-    template_name = 'auth_forms/logout_form.html'
+    template_name = 'authentication_app/logout_form.html'
     next_page = reverse_lazy('blog:post-list')
-    login_url = '/auth/login/'
+    login_url = 'authentication_app:login'
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
@@ -71,9 +71,9 @@ class UserLogoutView(LoginRequiredMixin,LogoutView):
 
 class UserDeleteView(LoginRequiredMixin,DeleteView):
     model = models.AuthUser
-    template_name = 'auth_forms/delete_account_form.html'
+    template_name = 'authentication_app/delete_account_form.html'
     success_url = reverse_lazy('blog:post-list')
-    login_url = '/auth/login/'
+    login_url = 'authentication_app:login'
 
     def get_object(self):
         return self.request.user
@@ -87,16 +87,16 @@ class UserDeleteView(LoginRequiredMixin,DeleteView):
 
 class UserProfileView(DetailView):
     model = models.AuthUser
-    template_name = 'auth_app_pages/user_profile.html'
+    template_name = 'authentication_app/user_profile.html'
     context_object_name = 'user'
     
 # ================================================
 
 class UserPanelView(LoginRequiredMixin,DetailView):
     model = models.AuthUser
-    template_name = 'auth_app_pages/user_panel.html'
+    template_name = 'authentication_app/user_panel.html'
     context_object_name = 'user'
-    login_url = '/auth/login/'
+    login_url = 'authentication_app:login'
     
     def get_object(self, queryset=None):
         return self.request.user
@@ -112,8 +112,8 @@ class UserPanelView(LoginRequiredMixin,DetailView):
 class UserChangeProfileView(LoginRequiredMixin, UpdateView):
     model = models.AuthUser
     form_class = forms.UserChangeProfileForm
-    template_name = 'auth_forms/change_profile_form.html'
-    login_url = '/auth/login/'
+    template_name = 'authentication_app/change_profile_form.html'
+    login_url = 'authentication_app:login'
     success_url =  reverse_lazy('authentication_app:user-panel')
     
     def get_object(self, queryset=None):

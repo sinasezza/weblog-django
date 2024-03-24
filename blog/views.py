@@ -14,7 +14,7 @@ class HomePageView(TemplateView):
 # =======================================================
 
 class PostListView(ListView):
-    template_name = 'blog_pages/post_list_page.html'
+    template_name = 'blog/post_list_page.html'
     context_object_name = 'posts'
     paginate_by = 8
     
@@ -36,7 +36,7 @@ class PostListView(ListView):
 class PostDetailView(DetailView):
     model = models.Post
     context_object_name = 'post'
-    template_name = 'blog_pages/post_detail_page.html'
+    template_name = 'blog/post_detail_page.html'
     
     def get_context_data(self, **kwargs): 
         context         = super().get_context_data(**kwargs)
@@ -50,7 +50,7 @@ class PostDetailView(DetailView):
 class PostCommentCreateView(LoginRequiredMixin,SuccessMessageMixin, CreateView):
     model = models.PostComment
     form_class = forms.PostCommentForm
-    template_name = 'blog_pages/post_detail_page.html'
+    template_name = 'blog/post_detail_page.html'
     context_object_name = 'post'
     success_message = 'Comment is Posted Success fully , it will be shown when admins confirm it'
     
@@ -83,9 +83,9 @@ class PostCombine_detail_comment_View(View):
 
 class PostCreateView(LoginRequiredMixin,SuccessMessageMixin,CreateView):
     model = models.Post
-    template_name = 'blog_forms/post_create_form.html'
+    template_name = 'blog/post_create_form.html'
     success_url = reverse_lazy('authentication_app:user-panel')
-    login_url = '/auth/login/'
+    login_url = 'authentication_app:login'
     fields = ['title', 'post_header_image']
     success_message = 'post created successfully'
 
@@ -113,9 +113,9 @@ class PostCreateView(LoginRequiredMixin,SuccessMessageMixin,CreateView):
   
 class PostUpdateView(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
     model = models.Post
-    template_name = 'blog_forms/post_update_form.html'
+    template_name = 'blog/post_update_form.html'
     success_url = reverse_lazy('authentication_app:user-panel')
-    login_url = '/auth/login/'
+    login_url = 'authentication_app:login'
     fields = ['title', 'post_header_image']
     success_message = 'post updated successfully'
 
@@ -144,7 +144,7 @@ class PostStatusUpdateView(LoginRequiredMixin,View):
     model = models.Post
     form_class = forms.PostStatusForm
     success_url = reverse_lazy('authentication_app:user-panel')
-    login_url = '/auth/login/'
+    login_url = 'authentication_app:login'
     
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
@@ -162,6 +162,6 @@ class PostStatusUpdateView(LoginRequiredMixin,View):
 class PostDeleteView(LoginRequiredMixin,DeleteView):
     model = models.Post
     success_url = reverse_lazy('authentication_app:user-panel')
-    login_url = '/auth/login/'
+    login_url = 'authentication_app:login'
        
 # =======================================================
