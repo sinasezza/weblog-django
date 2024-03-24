@@ -1,8 +1,9 @@
-from django.shortcuts import render , redirect
+from django.shortcuts import render , redirect, get_object_or_404
 from django.views.generic import View , DeleteView , DetailView , UpdateView
 from django.contrib.auth.views import LoginView , LogoutView 
 from django.contrib.auth import login, authenticate , logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages 
 from django.urls import reverse_lazy
 from . import models,forms
@@ -59,17 +60,16 @@ class UserLoginView(LoginView):
 
 # ================================================
 
-class UserLogoutView(LoginRequiredMixin,LogoutView):
+class UserLogoutView(LoginRequiredMixin, SuccessMessageMixin, LogoutView):
     template_name = 'authentication_app/logout_form.html'
     next_page = reverse_lazy('blog:post-list')
     login_url = 'authentication_app:login'
+    success_message = "You have successfully logged out."
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
     
 # ================================================
 
-class UserDeleteView(LoginRequiredMixin,DeleteView):
+class UserDeleteView(LoginRequiredMixin, DeleteView):
     model = models.AuthUser
     template_name = 'authentication_app/delete_account_form.html'
     success_url = reverse_lazy('blog:post-list')
@@ -89,10 +89,14 @@ class UserProfileView(DetailView):
     model = models.AuthUser
     template_name = 'authentication_app/user_profile.html'
     context_object_name = 'user'
+
+    def get_object(self, queryset=None):
+        username = self.kwargs.get('username')
+        return get_object_or_404(models.AuthUser, username=username)
     
 # ================================================
 
-class UserPanelView(LoginRequiredMixin,DetailView):
+class UserPanelView(LoginRequiredMixin, DetailView):
     model = models.AuthUser
     template_name = 'authentication_app/user_panel.html'
     context_object_name = 'user'
@@ -103,13 +107,13 @@ class UserPanelView(LoginRequiredMixin,DetailView):
     
     def get_context_data(self, **kwargs):
         context     = super().get_context_data(**kwargs)
-        user_posts  = blog_models.Post.objects.filter(author_id=self.request.user.id)
+        user_posts  = self.request.user.posts.all()
         context['posts'] = user_posts.order_by('-publish_date')
         return context
     
 # ================================================
 
-class UserChangeProfileView(LoginRequiredMixin, UpdateView):
+class UserChangeProfileView(LoginRequiredMixin,  UpdateView):
     model = models.AuthUser
     form_class = forms.UserChangeProfileForm
     template_name = 'authentication_app/change_profile_form.html'

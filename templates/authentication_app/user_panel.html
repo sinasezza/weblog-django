@@ -39,10 +39,13 @@
                       <p><img src="{% if user.profile_photo %} {{ user.profile_photo.url }} {% endif %}" class="img-fluid" alt="Profile Photo"></p>
                       <p class="card-text"><strong>Username:</strong> {{ user.username }}</p>
                       <p class="card-text"><strong>Phone Number:</strong> {{ user.phone_number }}</p>
-                      <a href="{% url 'authentication_app:user-profile' user.pk user.username %}" class="btn panel_btns my-1 btn-secondary">Profile</a>
-                      <a href="{% url 'authentication_app:user-change-profile' user.pk %}" class="btn panel_btns my-1 btn-primary">Edit Profile</a>
-                      <a href="{% url 'authentication_app:logout' pk=user.pk %}"   class="btn panel_btns my-1 btn-warning">Logout</a>
-                      <a href="{% url 'authentication_app:delete-account' pk=user.pk %}"   class="btn panel_btns my-1 btn-danger">Delete Account</a>
+                      <a href="{% url 'authentication_app:user-profile' user.username %}" class="btn panel_btns my-1 btn-secondary">Profile</a>
+                      <a href="{% url 'authentication_app:user-change-profile' user.username %}" class="btn panel_btns my-1 btn-primary">Edit Profile</a>
+                      <form action="{% url 'authentication_app:logout' %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn panel_btns my-1 btn-warning">Logout</button>
+                      </form>
+                      <a href="{% url 'authentication_app:delete-account' %}"   class="btn panel_btns my-1 btn-danger">Delete Account</a>
                   </div>
             </div>
         </div>
@@ -56,7 +59,7 @@
                 </div>
               </div>
               <br>
-              {% if posts.count > 0 %}
+              {% if posts.exists %}
                 {% for post in posts %}
                   <div class="card my-5 single-post" id="id_post-{{post.pk}}">
                     <div class="card-title card-body">
@@ -85,13 +88,13 @@
                           <div class="col-3"><a href="{% url 'blog:post-detail' slug=post.slug %}" class="btn btn-primary">Goto Post</a></div>
                           <div class="col-3"><a href="{% url 'blog:post-update' slug=post.slug %}" class="btn btn-primary">Update</a></div>
                           {% if post.status == 'draft' %}
-                          <div class="col-4">STATUS : <button id="status-btn" pk="{{post.pk}}" slug="{{post.slug}}" class="btn btn-secondary text-dark mx-2" onclick="changeStatus(this)" title="click to make it Publised">{{post.status}}</button></div>
+                          <div class="col-4">STATUS : <button  pk="{{post.pk}}" slug="{{post.slug}}" class="status-btn btn btn-secondary text-dark mx-2" title="click to make it Publised">{{post.status}}</button></div>
                           {% else %}
-                          <div class="col-4">STATUS : <button id="status-btn" pk="{{post.pk}}" slug="{{post.slug}}" class="btn btn-success mx-2" onclick="changeStatus(this)" title="click to make it Draft">{{post.status}}</button></div>
+                          <div class="col-4">STATUS : <button  pk="{{post.pk}}" slug="{{post.slug}}" class="status-btn btn btn-success mx-2" title="click to make it Draft">{{post.status}}</button></div>
                           {% endif %}
                         </div>
                         <div class="row">
-                          <button type="button" id="del-btn" pk="{{post.pk}}" slug="{{post.slug}}" ptitle="{{post.title}}" class="btn w-100 btn-danger mx-auto my-2" onclick="openDelForm(this)">DELETE POST</button>
+                          <button type="button" pk="{{post.pk}}" slug="{{post.slug}}" ptitle="{{post.title}}" class="del-btn btn w-100 btn-danger mx-auto my-2">DELETE POST</button>
                         </div>
                     </div>
                   </div>
@@ -106,90 +109,90 @@
   </div>
 {% endblock %}
 
+
+
 {% block scripts %}
   <script>
-    
-    function changeStatus(statusButton){
-      let $status = statusButton.innerHTML;
-      let pk = statusButton.getAttribute('pk');
-      let slug = statusButton.getAttribute('slug');
-      let postUrl = `/post-status-update/${pk}-${slug}/`;
+    $(document).ready(function() {
       
-      if($status == 'draft')
-        $status = 'published';
-      else
-        $status = 'draft';
-      
-      $('#id_status').val($status);
-      let postForm = $("#update-status-form");
-      
-      $.ajax({
-        url: postUrl,
-        method: 'POST',
-        data: {
-            form: postForm.serialize(),
-            csrfmiddlewaretoken: '{{csrf_token}}',
-            status: $status,
-        },
-        success: function(response) {
-          if (response.success) {
-              statusButton.innerHTML = $status;
-              if($status == 'draft') {
-                  statusButton.classList.add('btn-secondary', 'text-dark');
-                  statusButton.classList.remove('btn-success'); 
-                  statusButton.setAttribute('title','click to make it Published');
+      // Function to change status of post
+      $('.status-btn').on('click', function() {
+        console.log(`clicked`);
+        let $statusButton = $(this); // Save reference to the button
+        let $status = $statusButton.text();
+        let slug = $statusButton.attr('slug');
+        let postUrl = `/post-status-update/${slug}/`;
+
+        $status = $status === 'draft' ? 'published' : 'draft';
+
+        $('#id_status').val($status);
+        let postForm = $("#update-status-form");
+
+        $.ajax({
+          url: postUrl,
+          method: 'POST',
+          data: {
+              form: postForm.serialize(),
+              csrfmiddlewaretoken: '{{csrf_token}}',
+              status: $status,
+          },
+          success: function(response) {
+            if (response.success) {
+              $statusButton.text($status); // Use the saved reference
+              if ($status === 'draft') {
+                $statusButton.addClass('btn-secondary text-dark').removeClass('btn-success').attr('title', 'click to make it Published');
               } else {
-                  statusButton.classList.add('btn-success');
-                  statusButton.classList.remove('btn-secondary', 'text-dark');
-                  statusButton.setAttribute('title','click to make it Draft');
+                $statusButton.addClass('btn-success').removeClass('btn-secondary text-dark').attr('title', 'click to make it Draft');
               }
-          }else{
+            } else {
               console.log(response.errors);
+            }
           }
-        }
+        });
       });
-    }
-    // ---------------------------------------
-    function openDelForm(delButton){
-      let pk = $(delButton).attr('pk');
-      let slug = $(delButton).attr('slug');
-      let ptitle = $(delButton).attr('ptitle');
-    
-      $('#post-delete-modal #title').text(ptitle);
-      $('#post-delete-modal #id').text(pk);
-      $('#post-delete-modal #post-delete-form').attr('action', `/blog/post-delete/${pk}-${slug}/`);
-      $('#post-delete-modal').modal('show');
-    }
 
+      // Function to open delete post modal
+      $('.del-btn').on('click', function() {
+        let pk = $(this).attr('pk');
+        let ptitle = $(this).attr('ptitle');
 
-    $('#post-delete-form').on('submit', function (e) {
-      e.preventDefault();
+        $('#post-delete-modal #title').text(ptitle);
+        $('#post-delete-modal #id').text(pk);
+        $('#post-delete-modal #post-delete-form').attr('action', `/post-delete/${pk}/`);
+        $('#post-delete-modal').modal('show');
+      });
 
-      let pk       = $('#post-delete-modal #id').text();
-      let postUrl  = `/post-delete/${pk}/`;
-      let postForm = $('#post-delete-form');
+      // Submit delete post form
+      $('#post-delete-form').on('submit', function(e) {
+        e.preventDefault();
 
-      $.ajax({
-        url: postUrl,
-        method: 'POST',
-        data: {
+        let pk = $('#post-delete-modal #id').text();
+        let postUrl = `/post-delete/${pk}/`;
+        let postForm = $('#post-delete-form');
+
+        $.ajax({
+          url: postUrl,
+          method: 'POST',
+          data: {
             form: postForm.serialize(),
             csrfmiddlewaretoken: '{{csrf_token}}',
         },
-        success: function(response) {
-          $('#id_post-'+pk).remove();
-          $('#post-delete-modal').modal('hide');
-        }
+          success: function(response) {
+            $('#id_post-' + pk).remove();
+            $('#post-delete-modal').modal('hide');
+          },
+          error: function(xhr, textStatus, errorThrown) {
+            console.error(xhr.responseText);
+            // Handle error gracefully
+          }
+        });
       });
-      
-    });
-    
-    
-    $('#post-delete-modal button[type="button"]').on('click', function () {
-      $('#post-delete-modal').modal('hide');
-    });
 
-
+      // Close modal on button click
+      $('#post-delete-modal button[type="button"]').on('click', function() {
+        $('#post-delete-modal').modal('hide');
+      });
+    });
   </script>
-
 {% endblock scripts %}
+

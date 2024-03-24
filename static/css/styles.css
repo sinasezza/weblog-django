@@ -92,7 +92,6 @@ form label {
 /* ---------------------------------------------- */
 @media (min-width: 768px) {
   .form-horizontal .control-label {
-    text-align: right;
     margin-bottom: 0;
     padding-top: 7px;
   }

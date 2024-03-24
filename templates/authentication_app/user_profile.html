@@ -3,19 +3,34 @@
 {% block title %}Profile{% endblock title %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <img src="{% if user.profile_photo %} {{ user.profile_photo.url }} {% endif %}" class="img-fluid" alt="Profile Photo">
-            </div>
-            <div class="col-md-8">
-                <h2>{{ user.username }}</h2>
-                <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-                <p><strong>Email:</strong> {{ user.email }}</p>
-                <p><strong>Phone Number:</strong> {{ user.phone_number }}</p>
-                <p><strong>Age:</strong> {{ user.age }}</p>
-                <p><strong>Bio:</strong> {{ user.bio }}</p>
-            </div>
-        </div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <img src="{% if user.profile_photo %} {{ user.profile_photo.url }} {% endif %}" class="img-fluid rounded" alt="Profile Photo">
     </div>
+    <div class="col-md-8">
+      <h2 class="mt-3">{{ user.username }}</h2>
+      <div class="row mt-4">
+        <div class="col-sm-3"><strong>Name:</strong></div>
+        <div class="col-sm-9">{{ user.first_name }} {{ user.last_name }}</div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-sm-3"><strong>Email:</strong></div>
+        <div class="col-sm-9">{{ user.email }}</div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-sm-3"><strong>Phone Number:</strong></div>
+        <div class="col-sm-9">{{ user.phone_number }}</div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-sm-3"><strong>Age:</strong></div>
+        <div class="col-sm-9">{{ user.age }}</div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-sm-3"><strong>Bio:</strong></div>
+        <div class="col-sm-9">{{ user.bio }}</div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}

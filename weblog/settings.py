@@ -26,9 +26,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'livesync',
     'django.contrib.staticfiles',
     'autoslug',
+    'django_browser_reload',
     'blog.apps.BlogConfig',
     'authentication_app.apps.AuthenticationAppConfig',
 ]
@@ -37,18 +37,17 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'livesync.core.middleware.DjangoLiveSyncMiddleware',
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-DJANGO_LIVESYNC = {
-    'PORT': 8000 
-}
 
 ROOT_URLCONF = 'weblog.urls'
+
+LOGIN_URL = 'authentication_app:login'
 
 TEMPLATES = [
     {

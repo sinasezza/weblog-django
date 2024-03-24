@@ -140,7 +140,7 @@ class PostUpdateView(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
 
 # =======================================================
 
-class PostStatusUpdateView(LoginRequiredMixin,View):
+class PostStatusUpdateView(LoginRequiredMixin, View):
     model = models.Post
     form_class = forms.PostStatusForm
     success_url = reverse_lazy('authentication_app:user-panel')
@@ -149,7 +149,7 @@ class PostStatusUpdateView(LoginRequiredMixin,View):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            post = get_object_or_404(self.model, pk=self.kwargs.get('pk'))
+            post = get_object_or_404(self.model, slug=self.kwargs.get('slug'))
             post.status = form.cleaned_data['status']
             post.save()
             data = {'success': True}
@@ -159,7 +159,7 @@ class PostStatusUpdateView(LoginRequiredMixin,View):
 
 # =======================================================
 
-class PostDeleteView(LoginRequiredMixin,DeleteView):
+class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = models.Post
     success_url = reverse_lazy('authentication_app:user-panel')
     login_url = 'authentication_app:login'

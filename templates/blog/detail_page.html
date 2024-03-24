@@ -11,7 +11,7 @@
     <div class="col-md-8">
         <h1 class="mt-4">{{ post.title }}</h1>
         <p class="lead">
-            by <a href="{% url 'authentication_app:user-profile' pk=post.author.pk username=post.author.username %}">{{ post.author }}</a>
+            by <a href="{% url 'authentication_app:user-profile' username=post.author.username %}">{{ post.author }}</a>
         </p>
         <hr>
         {% if post.header_image %}
