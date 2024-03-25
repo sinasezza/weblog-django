@@ -19,7 +19,7 @@ git clone https://github.com/sinasezza/weblog-django.git
 
 ### Navigate to the project directory:
 ```bash
-cd weblog_project
+cd weblog-django
 ```
 
 ### Create a virtual Environment(optional):
@@ -59,6 +59,8 @@ Access the application in your web browser at http://127.0.0.1:8000.
   * Change profile information
 
 * Post Management:
+  * View Published Posts
+  * Search Among Published Posts
   * Create new posts
   * Update existing posts
 
