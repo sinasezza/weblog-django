@@ -1,7 +1,7 @@
 # weblog-django
 
 ## Overview
-This is a weblog project built using Django framework, Bootstrap, jQuery, and class-based views. The project allows users to sign up, log in, delete their account, change profile information, create, and update posts. Authenticated users can also leave comments on post detail pages.
+This is a weblog project built using Django framework, Bootstrap, jQuery, and class-based views. The project allows users to sign up, log in, delete their account, change profile information, view, search, create, and update posts. Authenticated users can also leave comments on post detail pages.
 
 ## Requirements
 * [Python](https://www.python.org/) 3.10 or above

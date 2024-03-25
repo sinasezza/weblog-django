@@ -25,7 +25,7 @@
           <div class="col-md-4"></div>
           <div class="col-md-8">
           <div class="card mb-4 shadow-sm">
-            <img class="card-img-top" src="{% if post.post_header_image %}{{post.post_header_image.url}}{% endif %}" alt="{{ post.title }}">
+            <img class="card-img-top" src="{% if post.header_image %}{{post.header_image.url}}{% endif %}" alt="{{ post.title }}">
             <div class="card-body">
               <h4 class="card-title">{{ post.title }}</h4>
               <p class="card-text">{{ post.paragraphs.first.content|slice:":40"}}...</p>
@@ -33,10 +33,10 @@
             <div class="card-footer">
               <div class="d-flex justify-content-between align-items-center">
                 <small class="text-muted">{{ post.publish_date|date }}</small>
-                <div class="author-name">{{ post.post_author}}</div>
+                <div class="author-name">{{ post.author}}</div>
               </div>
               <div class="my-2">
-                <a href="{% url 'blog:post-detail' post.pk post.post_slug %}" class="btn btn-primary">Read More</a>
+                <a href="{{post.get_absolute_url}}" class="btn btn-primary">Read More</a>
               </div>
             </div>
           </div>

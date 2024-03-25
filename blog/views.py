@@ -22,7 +22,7 @@ class PostListView(ListView):
         published_posts = models.Post.objects.filter(status='published')
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
-            published_posts = published_posts.filter(title__startswith=search_input)
+            published_posts = published_posts.filter(title__icontains=search_input)
         return published_posts.order_by('-publish_date')
     
     def get_context_data(self, **kwargs):

@@ -1,6 +1,7 @@
 import string
 import random
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from autoslug import AutoSlugField
 from authentication_app.models import AuthUser 
@@ -28,7 +29,10 @@ class Post(models.Model):
     update_date = models.DateTimeField(auto_now=True)
     POST_STATUSES = (('published', 'PUBLISHED'), ('draft', 'DRAFT'))
     status = models.CharField(max_length=10, choices=POST_STATUSES, default='draft')
-
+    
+    def get_absolute_url(self):
+        return reverse("blog:post-detail", kwargs={"slug": self.slug})
+    
 
     def __str__(self):
         return self.title
