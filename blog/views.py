@@ -55,7 +55,7 @@ class PostCommentCreateView(LoginRequiredMixin,SuccessMessageMixin, CreateView):
     success_message = 'Comment is Posted Success fully , it will be shown when admins confirm it'
     
     def form_valid(self, form):
-        post = models.Post.objects.get(pk=self.kwargs['pk'])
+        post = models.Post.objects.get(slug=self.kwargs['slug'])
         form.instance.post = post
         form.instance.user = self.request.user
         return super().form_valid(form)
@@ -64,7 +64,7 @@ class PostCommentCreateView(LoginRequiredMixin,SuccessMessageMixin, CreateView):
         return super().form_invalid(form)
     
     def get_success_url(self):
-        return reverse_lazy('blog:post-detail', kwargs={'pk': self.kwargs['pk'], 'slug': self.kwargs['slug']})
+        return reverse_lazy('blog:post-detail', kwargs={'slug': self.kwargs['slug']})
 
 
 # =======================================================

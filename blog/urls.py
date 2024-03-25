@@ -11,7 +11,5 @@ urlpatterns = [
     path('post-update/<str:slug>/', views.PostUpdateView.as_view(), name='post-update'),
     path('post-status-update/<str:slug>/', views.PostStatusUpdateView.as_view(), name='post-status-update'),
     path('post-delete/<str:pk>/', views.PostDeleteView.as_view(), name='post-delete'),
-    path('post-comment-create/', views.PostCommentCreateView.as_view(), name='post-comment-create'),
-    
-
+    path('post-comment-create/<str:slug>/', views.PostCommentCreateView.as_view(), name='post-comment-create'),
 ]
